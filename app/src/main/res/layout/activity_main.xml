@@ -8,12 +8,13 @@
 
     <Button
         android:id="@+id/btnAddItems"
+        android:onClick="onAddItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        android:layout_marginBottom="11dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="11dp"
+        android:text="@string/add" />
 
     <ListView
         android:layout_width="match_parent"
@@ -31,6 +32,6 @@
         android:layout_below="@+id/lvItems"
         android:layout_toStartOf="@+id/btnAddItems"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name" />
+        android:hint="@string/add_item"
+        android:inputType="textPersonName" />
 </RelativeLayout>
