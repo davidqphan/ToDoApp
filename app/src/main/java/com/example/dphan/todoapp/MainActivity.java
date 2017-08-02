@@ -1,5 +1,6 @@
 package com.example.dphan.todoapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
+    private final int REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,31 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
         });
+
+
+        lvItems.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapter,
+                                            View item, int pos, long id) {
+                        Intent editItemIntent = new Intent(getApplicationContext(), EditItemActivity.class);
+                        editItemIntent.putExtra("itemText", items.get(pos));
+                        editItemIntent.putExtra("positionText", pos);
+                        startActivityForResult(editItemIntent, REQUEST_CODE);
+                    }
+        });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            // Extract name value from result extras
+            String itemText = data.getExtras().getString("itemText");
+            int positionText = data.getExtras().getInt("positionText", 0);
+            items.set(positionText, itemText);
+        }
     }
 
     public void onAddItem(View v) {
@@ -78,4 +105,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
 }
