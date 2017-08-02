@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             String itemText = data.getExtras().getString("itemText");
             int positionText = data.getExtras().getInt("positionText", 0);
             items.set(positionText, itemText);
+            writeItems();
         }
     }
 
