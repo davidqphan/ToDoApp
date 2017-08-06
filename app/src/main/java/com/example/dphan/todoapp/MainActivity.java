@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -34,10 +36,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void attachAdapterToListView() {
-        items = new ArrayList<TodoItem>();
-        itemsAdapter = new TodoItemsAdapter(this, items);
 
         lvItems = (ListView)findViewById(R.id.lvItems);
+
+        items = new ArrayList<>(SQLite.select().from(TodoItem.class).queryList());
+
+        itemsAdapter = new TodoItemsAdapter(this, items);
         lvItems.setAdapter(itemsAdapter);
     }
 
@@ -47,12 +51,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> adapter,
                                                            View item, int pos, long id) {
+                        TodoItem todoItem = items.get(pos);
+
                         items.remove(pos);
                         itemsAdapter.notifyDataSetChanged();
+
+                        todoItem.delete();
                         return true;
                     }
         });
-
 
         lvItems.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
@@ -75,14 +82,18 @@ public class MainActivity extends AppCompatActivity {
             // Extract name value from result extras
             String itemText = data.getExtras().getString("itemText");
             int positionText = data.getExtras().getInt("positionText", 0);
-            items.set(positionText, new TodoItem(itemText));
+            TodoItem todoItem = new TodoItem(itemText);
+            items.set(positionText, todoItem);
+            todoItem.save();
         }
     }
 
     public void onAddItem(View v) {
         EditText etNewItem = (EditText)findViewById(R.id.etEditText);
         String itemText = etNewItem.getText().toString();
-        itemsAdapter.add(new TodoItem(itemText));
+        TodoItem todoItem = new TodoItem(itemText);
+        itemsAdapter.add(todoItem);
         etNewItem.setText("");
+        todoItem.save();
     }
 }
