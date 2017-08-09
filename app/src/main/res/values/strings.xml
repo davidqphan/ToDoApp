@@ -6,4 +6,5 @@
     <string name="edit_text_view">Edit Item Below:</string>
     <string name="activity_todo">Simple Todo</string>
     <string name="activity_edit_item">Edit Item</string>
+    <string name="action_new">New</string>
 </resources>
