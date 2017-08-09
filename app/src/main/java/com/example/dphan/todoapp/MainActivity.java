@@ -1,29 +1,23 @@
 package com.example.dphan.todoapp;
 
-import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements EditItemDialogFragment.EditItemDialogListener {
     ArrayList<TodoItem> items;
     TodoItemsAdapter itemsAdapter;
     ListView lvItems;
-    private final int REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,64 +30,85 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void attachAdapterToListView() {
-
         lvItems = (ListView)findViewById(R.id.lvItems);
-
         items = new ArrayList<>(SQLite.select().from(TodoItem.class).queryList());
 
         itemsAdapter = new TodoItemsAdapter(this, items);
         lvItems.setAdapter(itemsAdapter);
     }
 
-    private void setUpListViewListener() {
-        lvItems.setOnItemLongClickListener(
-                new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> adapter,
-                                                           View item, int pos, long id) {
-                        TodoItem todoItem = items.get(pos);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_main_actions, menu);
 
-                        items.remove(pos);
-                        itemsAdapter.notifyDataSetChanged();
-
-                        todoItem.delete();
-                        return true;
-                    }
-        });
-
-        lvItems.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapter,
-                                            View item, int pos, long id) {
-                        Intent editItemIntent = new Intent(getApplicationContext(), EditItemActivity.class);
-                        editItemIntent.putExtra("itemText", items.get(pos).getTodoName());
-                        editItemIntent.putExtra("positionText", pos);
-                        startActivityForResult(editItemIntent, REQUEST_CODE);
-                    }
-        });
-
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // REQUEST_CODE is defined above
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-            // Extract name value from result extras
-            String itemText = data.getExtras().getString("itemText");
-            int positionText = data.getExtras().getInt("positionText", 0);
-            TodoItem todoItem = new TodoItem(itemText);
-            items.set(positionText, todoItem);
-            todoItem.save();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_new:
+                setUpDialogFragmentForNewItem();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
-    public void onAddItem(View v) {
-        EditText etNewItem = (EditText)findViewById(R.id.etEditText);
-        String itemText = etNewItem.getText().toString();
-        TodoItem todoItem = new TodoItem(itemText);
-        itemsAdapter.add(todoItem);
-        etNewItem.setText("");
+    private void setUpDialogFragmentForNewItem() {
+        FragmentManager fm = getSupportFragmentManager();
+        EditItemDialogFragment editItemDialogFragment = EditItemDialogFragment
+                .newInstance(new TodoItem(), items.size());
+        editItemDialogFragment.show(fm, "fragment_edit_item");
+    }
+
+    private void setUpListViewListener() {
+        setUpRemoveItemListener();
+        setUpEditItemListener();
+    }
+
+    private void setUpRemoveItemListener() {
+        lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long id) {
+                TodoItem todoItem = items.get(pos);
+
+                items.remove(pos);
+                itemsAdapter.notifyDataSetChanged();
+
+                todoItem.delete();
+                return true;
+            }
+        });
+    }
+
+    private void setUpEditItemListener() {
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View item, int pos, long id) {
+                setUpDialogFragmentForEdit(pos);
+            }
+        });
+    }
+
+    private void setUpDialogFragmentForEdit(int pos) {
+        FragmentManager fm = getSupportFragmentManager();
+        EditItemDialogFragment editItemDialogFragment = EditItemDialogFragment
+                .newInstance(items.get(pos), pos);
+        editItemDialogFragment.show(fm, "fragment_edit_item");
+    }
+
+    @Override
+    public void onFinishEditDialog(TodoItem todoItem, int position) {
         todoItem.save();
+
+        if(position != items.size()) {
+            items.set(position, todoItem);
+        } else {
+            items.add(todoItem);
+        }
+        itemsAdapter.notifyDataSetChanged();
     }
 }

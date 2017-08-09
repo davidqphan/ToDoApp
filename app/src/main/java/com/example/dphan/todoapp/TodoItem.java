@@ -9,7 +9,6 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
  * Created by dphan on 8/5/17.
  */
 
-
 @Table(database = TodoItemDatabase.class)
 public class TodoItem extends BaseModel {
 
@@ -19,14 +18,6 @@ public class TodoItem extends BaseModel {
 
     @Column
     String todoName;
-
-    public TodoItem() {
-
-    }
-
-    public TodoItem(String name) {
-        this.todoName = name;
-    }
 
     public void setName(String name) {
         this.todoName = name;
