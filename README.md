@@ -16,12 +16,12 @@ The following **required** functionality is completed:
 
 The following **optional** features are implemented:
 
-* [ ] Persist the todo items [into SQLite](http://guides.codepath.com/android/Persisting-Data-to-the-Device#sqlite) instead of a text file
-* [ ] Improve style of the todo items in the list [using a custom adapter](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView)
+* [X] Persist the todo items [into SQLite](http://guides.codepath.com/android/Persisting-Data-to-the-Device#sqlite) instead of a text file
+* [X] Improve style of the todo items in the list [using a custom adapter](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView)
 * [ ] Add support for completion due dates for todo items (and display within listview item)
-* [ ] Use a [DialogFragment](http://guides.codepath.com/android/Using-DialogFragment) instead of new Activity for editing items
+* [X] Use a [DialogFragment](http://guides.codepath.com/android/Using-DialogFragment) instead of new Activity for editing items
 * [ ] Add support for selecting the priority of each todo item (and display in listview item)
-* [ ] Tweak the style improving the UI / UX, play with colors, images or backgrounds
+* [X] Tweak the style improving the UI / UX, play with colors, images or backgrounds
 
 The following **additional** features are implemented:
 
@@ -34,17 +34,20 @@ Here's a walkthrough of implemented user stories:
 ### Required Functionality
 <img src='https://github.com/davidqphan/ToDoApp/blob/master/todoapp-basic-requirements.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
+### Optional Functionality
+<img src='https://github.com/davidqphan/ToDoApp/blob/master/optional-features.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
 ## Project Analysis
 
 As part of your pre-work submission, please reflect on the app and answer the following questions below:
 
 **Question 1:** "What are your reactions to the Android app development platform so far? Compare and contrast Android's approach to layouts and user interfaces in past platforms you've used."
 
-**Answer:** [Enter your answer here in a paragraph or two].
+**Answer:** There is still alot to learn about Android app development. I cannot comment on the approach as this is my first platform to creating layouts and user interfaces. However I am enjoying the learning process.
 
 **Question 2:** "Take a moment to reflect on the `ArrayAdapter` used in your pre-work. How would you describe an adapter in this context and what is its function in Android? Why do you think the adapter is important? Explain the purpose of the `convertView` in the `getView` method of the `ArrayAdapter`."
 
-**Answer:** [Enter your answer here in a paragraph or two].
+**Answer:** ArrayAdapter provides views for a list view,whenever the ListView needs to draw a view at a position of the list view, it gets it from the adapter. They place data and the logic for creating views out of the data. The 'convertView' is a way for the ListView to recycle old View objects that are no longer being used. In 'getView', it returns a View that displays the data at the specified position in the data set. It uses the 'convertView' to check if it can use an old View to reuse, if possible. The ViewGroup parameter where it is the parent that the view will be attached to.
 
 ## Notes
 
