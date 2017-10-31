@@ -51,7 +51,7 @@ As part of your pre-work submission, please reflect on the app and answer the fo
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Challenges encountered while building the app:
 
 * I had an issue with DBFlow where I was overwriting the data instead of adding a new todo item.
 
